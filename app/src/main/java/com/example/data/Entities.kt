@@ -24,7 +24,8 @@ data class McpServerEntity(
     val status: String, // ONLINE, DEGRADED, SYNCING
     val pingMs: Int,
     val tokenSavingPercent: Int,
-    val lastLogMessage: String
+    val lastLogMessage: String,
+    val endpointUrl: String = ""
 )
 
 @Entity(tableName = "revenue_leads")

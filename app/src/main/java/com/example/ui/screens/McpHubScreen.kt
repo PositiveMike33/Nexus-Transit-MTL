@@ -177,6 +177,24 @@ fun McpServerCard(server: McpServerEntity, onPing: () -> Unit) {
                 color = TextSecondaryLight
             )
 
+            if (server.endpointUrl.isNotBlank()) {
+                Spacer(modifier = Modifier.height(6.dp))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = Icons.Default.Link,
+                        contentDescription = null,
+                        tint = PrimaryCyan.copy(alpha = 0.8f),
+                        modifier = Modifier.size(14.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = server.endpointUrl,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = PrimaryCyan.copy(alpha = 0.9f)
+                    )
+                }
+            }
+
             Spacer(modifier = Modifier.height(12.dp))
 
             Row(

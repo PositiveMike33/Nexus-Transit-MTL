@@ -13,16 +13,18 @@ object McpServicesEngine {
                 status = "ONLINE",
                 pingMs = 18,
                 tokenSavingPercent = 88,
-                lastLogMessage = "Flux GTFS-RT v2 actif: 247 bus en direct, 4 lignes Métro nominales."
+                lastLogMessage = "Flux GTFS-RT v2 actif: 247 bus en direct, 4 lignes Métro nominales.",
+                endpointUrl = "https://api.stm.info/pub/v2/gtfs/rt/"
             ),
             McpServerEntity(
                 id = "mcp_skyfi",
                 name = "MCP SkyFi Observation",
                 description = "Télé-observation satellite optique et micro-climat métropolitain",
                 status = "ONLINE",
-                pingMs = 32,
+                pingMs = 28,
                 tokenSavingPercent = 91,
-                lastLogMessage = "Imagerie optique SkyFi 0.5m: Conditions estivales optimales (27.5°C), aucun verglas à Montréal."
+                lastLogMessage = "Endpoint https://mcp.skyfi.com/mcp actif: Télémétrie optique 0.5m connectée.",
+                endpointUrl = "https://mcp.skyfi.com/mcp"
             ),
             McpServerEntity(
                 id = "mcp_pieces",
@@ -31,7 +33,8 @@ object McpServicesEngine {
                 status = "ONLINE",
                 pingMs = 12,
                 tokenSavingPercent = 94,
-                lastLogMessage = "Profil LTM chargé: Préférence pour passages couverts et Métro Orange."
+                lastLogMessage = "Profil LTM chargé: Préférence pour passages couverts et Métro Orange.",
+                endpointUrl = "mcp://localhost:1000"
             ),
             McpServerEntity(
                 id = "mcp_sales",
@@ -40,7 +43,8 @@ object McpServicesEngine {
                 status = "ONLINE",
                 pingMs = 24,
                 tokenSavingPercent = 82,
-                lastLogMessage = "Pipeline actif: 14 licences B2B qualifiées, 100% CTI/RTI calculés."
+                lastLogMessage = "Pipeline actif: 14 licences B2B qualifiées, 100% CTI/RTI calculés.",
+                endpointUrl = "https://mcp.nexustransit.b2b/mcp"
             )
         )
     }
