@@ -1,0 +1,6 @@
+{
+  "name": "NexusTransit Mtl",
+  "description": "Moteur agentique de transport prédictif pour Montréal fusionnant GTFS-RT STM, satellite SkyFi, mémoire Pieces MCP et Tree of Thoughts.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
