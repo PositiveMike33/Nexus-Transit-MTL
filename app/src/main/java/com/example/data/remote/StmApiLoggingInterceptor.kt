@@ -51,10 +51,11 @@ class StmApiLoggingInterceptor : Interceptor {
                 "<-- [RES ${response.code}] ${request.url.encodedPath} ($durationMs ms, $sizeFormatted)"
             )
         } else {
-            Log.w(
-                TAG,
-                "<-- [WARN ${response.code}] ${request.url.encodedPath} ($durationMs ms) : ${response.message}"
-            )
+            when (response.code) {
+                400 -> Log.e(TAG, "<-- [LIMIT 400] Quota de requêtes individuel ou débit dépassé (>10 req/sec ou >10 000 req/jour).")
+                429 -> Log.e(TAG, "<-- [LIMIT 429] Limite de débit globale au niveau de l'API STM atteinte (API level rate limit exceeded).")
+                else -> Log.w(TAG, "<-- [WARN ${response.code}] ${request.url.encodedPath} ($durationMs ms) : ${response.message}")
+            }
         }
 
         return response
