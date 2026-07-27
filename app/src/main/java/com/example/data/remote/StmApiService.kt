@@ -57,6 +57,7 @@ interface StmApiService {
             val okHttpClient = OkHttpClient.Builder()
                 .connectTimeout(15, TimeUnit.SECONDS)
                 .readTimeout(15, TimeUnit.SECONDS)
+                .addInterceptor(StmApiLoggingInterceptor())
                 .addInterceptor(loggingInterceptor)
                 .build()
 

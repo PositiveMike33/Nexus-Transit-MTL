@@ -9,10 +9,12 @@ import com.example.data.RevenueLeadEntity
 import com.example.data.RouteEntity
 import com.example.data.remote.StmApiService
 import com.example.data.remote.StmVehicleLocation
+import com.example.data.repository.StmRepository
 import com.example.engine.GeminiTransitAssistant
 import com.example.engine.McpServicesEngine
 import com.example.engine.TreeOfThoughtsEngine
 import com.example.model.*
+import com.example.util.DateUtils
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -23,8 +25,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val mcpDao = db.mcpDao()
     private val leadDao = db.leadDao()
 
-    // STM Retrofit API Service instance
-    private val stmApiService = StmApiService.create()
+    // STM Repository - Single Source of Truth
+    private val stmRepository = StmRepository.getInstance(application)
 
     // STM Realtime Vehicles State
     val liveVehiclePositions = MutableStateFlow<List<StmVehicleLocation>>(emptyList())
@@ -36,7 +38,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     val weatherObservation = MutableStateFlow(
         WeatherObservation(
-            condition = "Beau temps ensoleillé (Montréal - 27 Juillet)",
+            condition = "Beau temps ensoleillé (Montréal - ${DateUtils.getFormattedReferenceDate()})",
             pavementTempCelsius = 27.5f,
             snowClearanceIndex = 100,
             windChillCelsius = 29.0f,
@@ -70,7 +72,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             GeminiMessage(
                 id = "1",
                 sender = "GEMINI",
-                message = "Bonjour! Je suis l'Assistant Agentique NexusTransit Mtl. Nous sommes le 27 juillet (27.5°C, beau soleil à Montréal, aucun verglas). Comment puis-je optimiser vos déplacements STM et BIXI aujourd'hui?"
+                message = "Bonjour! Je suis l'Assistant Agentique NexusTransit Mtl. Nous sommes le ${DateUtils.getFormattedReferenceDate()} (27.5°C, beau soleil à Montréal, aucun verglas). Comment puis-je optimiser vos déplacements STM et BIXI aujourd'hui?"
             )
         )
     )
@@ -93,19 +95,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             isVehicleLoading.value = true
             try {
-                val response = stmApiService.getVehiclePositions(apiKey)
-                if (response.isSuccessful && response.body() != null) {
-                    val parsed = StmApiService.parseVehicleLocations(response.body())
-                    if (parsed.isNotEmpty()) {
-                        liveVehiclePositions.value = parsed
-                    } else {
-                        liveVehiclePositions.value = StmApiService.getMockVehiclePositions()
-                    }
-                } else {
-                    liveVehiclePositions.value = StmApiService.getMockVehiclePositions()
-                }
+                val locations = stmRepository.getVehiclePositions(apiKey)
+                liveVehiclePositions.value = locations
             } catch (e: Exception) {
-                // Connection fallback for offline / mock resilience
                 liveVehiclePositions.value = StmApiService.getMockVehiclePositions()
             } finally {
                 isVehicleLoading.value = false

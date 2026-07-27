@@ -2,6 +2,7 @@ package com.example.engine
 
 import com.example.BuildConfig
 import com.example.model.GeminiMessage
+import com.example.util.DateUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaType
@@ -30,7 +31,7 @@ object GeminiTransitAssistant {
         try {
             val systemInstruction = """
                 Vous êtes l'Assistant IA Agentique de NexusTransit Montréal (Moteur ToT + MCP STM + SkyFi Satellite + Pieces LTM).
-                Nous sommes aujourd'hui le 27 juillet à Montréal (temps estival, ensoleillé, environ 27.5°C, aucun verglas, réseau BIXI et STM 100% opérationnels).
+                Nous sommes aujourd'hui le ${DateUtils.getFormattedReferenceDate()} à Montréal (temps estival, ensoleillé, environ 27.5°C, aucun verglas, réseau BIXI et STM 100% opérationnels).
                 Fournissez des conseils de transport précis, réels et optimisés pour la métropole de Montréal.
                 Prenez en compte la télémétrie GTFS-RT STM en temps réel et le ré-itinérage Tree of Thoughts (ToT).
             """.trimIndent()
@@ -84,7 +85,7 @@ object GeminiTransitAssistant {
         val lower = prompt.lowercase()
         return when {
             lower.contains("verglas") || lower.contains("glace") || lower.contains("météo") || lower.contains("neige") || lower.contains("soleil") -> {
-                "Analyse Satellite SkyFi & MCP STM (27 Juillet): Beau temps ensoleillé à Montréal (Chaussée: 27.5°C, aucun verglas). Le réseau STM Bus & Métro ainsi que les stations BIXI fonctionnent à pleine capacité avec des conditions estivales optimales. Temps de déplacement très fluides."
+                "Analyse Satellite SkyFi & MCP STM (${DateUtils.getFormattedReferenceDate()}): Beau temps ensoleillé à Montréal (Chaussée: 27.5°C, aucun verglas). Le réseau STM Bus & Métro ainsi que les stations BIXI fonctionnent à pleine capacité avec des conditions estivales optimales. Temps de déplacement très fluides."
             }
             lower.contains("stm") || lower.contains("bus") || lower.contains("métro") -> {
                 "Télémétrie STM GTFS-RT v2 en direct: Lignes de métro Orange, Verte, Bleue et Jaune opérationnelles avec intervalle de 3 à 5 minutes. Bus 24 Sherbrooke et Bus 80 du Parc synchronisés avec score d'occupation moyen de 58%. Aucun blocage critique détecté."
@@ -93,7 +94,7 @@ object GeminiTransitAssistant {
                 "Portail Souverain Québec: Éligibilité à l'allocation STA Emploi-Québec estimée à 500 $/semaine (26 000 $/an). Récupération fiscale 100% CTI/RTI (TPS/TVQ) disponible immédiatement sur l'infrastructure logicielle et serveurs MCP. Grille tarifaire active: B2C à 9,99 $/m, B2B Enterprise à 297 $/m."
             }
             else -> {
-                "Analyse Agentique ToT (NexusTransit Montréal): Trajectoire calculée avec succès pour ce 27 juillet. Vos préférences indiquent une combinaison idéale entre Métro climatisé, Bus direct et réseau BIXI sous le soleil montréalais. Confiance prédictive: 98%."
+                "Analyse Agentique ToT (NexusTransit Montréal): Trajectoire calculée avec succès pour ce ${DateUtils.getFormattedReferenceDate()}. Vos préférences indiquent une combinaison idéale entre Métro climatisé, Bus direct et réseau BIXI sous le soleil montréalais. Confiance prédictive: 98%."
             }
         }
     }
