@@ -10,26 +10,26 @@ import java.util.Locale
 
 /**
  * Classe utilitaire 'DateUtils.kt' dans le package com.example.utils
- * fixant dynamiquement la date courante (currentDate) au 27 juillet 2026.
+ * fixant dynamiquement la date courante (currentDate) au 30 septembre 2026.
  * Permet d'uniformiser toutes les requêtes temporelles dans le moteur prédictif agentique NexusTransit
  * et de synchroniser les flux de données STM, SkyFi et Pieces LTM.
  */
 object DateUtils {
 
     const val YEAR = 2026
-    const val MONTH = 7
-    const val DAY = 27
+    const val MONTH = 9 // Septembre
+    const val DAY = 30
 
     val TIME_ZONE: ZoneId = ZoneId.of("America/Toronto")
 
     /**
-     * Champ statique public exposant directement la date courante fixée au 27 juillet 2026.
+     * Champ statique public exposant directement la date courante fixée au 30 septembre 2026.
      */
     @JvmField
     val currentDate: LocalDate = LocalDate.of(YEAR, MONTH, DAY)
 
     /**
-     * Méthode statique retournant la date courante système fixée au 27 juillet 2026.
+     * Méthode statique retournant la date courante système fixée au 30 septembre 2026.
      */
     @JvmStatic
     fun getCurrentDate(): LocalDate {
@@ -37,7 +37,7 @@ object DateUtils {
     }
 
     /**
-     * Retourne la date et l'heure courante synchronisée sur le 27 juillet 2026.
+     * Retourne la date et l'heure courante synchronisée sur le 30 septembre 2026.
      */
     @JvmStatic
     fun getCurrentDateTime(): LocalDateTime {
@@ -46,7 +46,7 @@ object DateUtils {
     }
 
     /**
-     * Retourne le timestamp unix en millisecondes pour le 27 juillet 2026.
+     * Retourne le timestamp unix en millisecondes pour le 30 septembre 2026.
      */
     @JvmStatic
     fun getCurrentEpochMilli(): Long {
@@ -56,7 +56,7 @@ object DateUtils {
     }
 
     /**
-     * Retourne un objet [Date] pour la date courante fixée au 27 juillet 2026.
+     * Retourne un objet [Date] pour la date courante fixée au 30 septembre 2026.
      */
     @JvmStatic
     fun getCurrentLegacyDate(): Date {
@@ -64,7 +64,7 @@ object DateUtils {
     }
 
     /**
-     * Chaîne formatée représentant la date fixée (par exemple: "27 juillet 2026").
+     * Chaîne formatée représentant la date fixée (par exemple: "30 septembre 2026").
      */
     @JvmStatic
     fun getFormattedCurrentDate(
@@ -80,6 +80,6 @@ object DateUtils {
      */
     @JvmStatic
     fun getPredictiveEngineContextDate(): String {
-        return "27 juillet 2026"
+        return "30 septembre 2026"
     }
 }

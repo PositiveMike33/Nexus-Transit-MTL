@@ -34,8 +34,8 @@ fun AiAssistantScreen(viewModel: MainViewModel) {
     val listState = rememberLazyListState()
 
     val quickPrompts = listOf(
-        "État du réseau Bus & Métro STM le 27 juillet?",
-        "Meilleur itinéraire BIXI + Métro sous le soleil de Montréal?",
+        "État du réseau Bus & Métro STM le 30 septembre?",
+        "Meilleur itinéraire BIXI + Métro cet automne à Montréal?",
         "Comment marche le remboursement CTI/RTI TPS/TVQ?",
         "Admissibilité à l'allocation STA Emploi-Québec?"
     )

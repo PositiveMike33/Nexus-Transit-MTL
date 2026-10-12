@@ -20,6 +20,7 @@ interface StmApiService {
      * Obtenir les positions des véhicules en temps réel (Bus & Métro STM).
      * @param apiKey Clé d'API développeur STM (passée via l'en-tête HTTP "apiKey")
      */
+    @retrofit2.http.Headers("Accept: application/json")
     @GET("gtfs-rt/v1/vehiclePositions")
     suspend fun getVehiclePositions(
         @Header("apiKey") apiKey: String = ""
@@ -29,6 +30,7 @@ interface StmApiService {
      * Obtenir les mises à jour de trajets (horaires, retards, annulations) en temps réel.
      * @param apiKey Clé d'API développeur STM (passée via l'en-tête HTTP "apiKey")
      */
+    @retrofit2.http.Headers("Accept: application/json")
     @GET("gtfs-rt/v1/tripUpdates")
     suspend fun getTripUpdates(
         @Header("apiKey") apiKey: String = ""
@@ -38,6 +40,7 @@ interface StmApiService {
      * Obtenir les alertes de service et perturbations du réseau STM.
      * @param apiKey Clé d'API développeur STM (passée via l'en-tête HTTP "apiKey")
      */
+    @retrofit2.http.Headers("Accept: application/json")
     @GET("gtfs-rt/v1/alerts")
     suspend fun getServiceAlerts(
         @Header("apiKey") apiKey: String = ""

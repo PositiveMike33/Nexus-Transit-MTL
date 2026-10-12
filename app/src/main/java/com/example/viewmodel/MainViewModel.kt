@@ -28,6 +28,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     // STM Repository - Single Source of Truth
     private val stmRepository = StmRepository.getInstance(application)
 
+    // User Preferences & Onboarding State via SharedPreferences
+    private val userPreferencesManager = com.example.data.local.UserPreferencesManager.getInstance(application)
+    val userPreferences = MutableStateFlow(userPreferencesManager.getPreferences())
+    val showOnboardingDialog = MutableStateFlow(!userPreferencesManager.hasCompletedOnboarding())
+
     // STM Realtime Vehicles State
     val liveVehiclePositions = MutableStateFlow<List<StmVehicleLocation>>(emptyList())
     val isVehicleLoading = MutableStateFlow(false)
@@ -36,16 +41,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val originState = MutableStateFlow("Berri-UQAM")
     val destinationState = MutableStateFlow("Station Bonaventure")
 
-    val weatherObservation = MutableStateFlow(
-        WeatherObservation(
-            condition = "Beau temps ensoleillé (Montréal - ${DateUtils.getFormattedReferenceDate()})",
-            pavementTempCelsius = 27.5f,
-            snowClearanceIndex = 100,
-            windChillCelsius = 29.0f,
-            iceAlertLevel = "AUCUN",
-            skyFiImageryAgeMinutes = 5
-        )
-    )
+    val weatherObservation = MutableStateFlow(DateUtils.getCurrentWeatherObservation())
 
     val passengerProfile = MutableStateFlow(PiecesPassengerProfile())
 
@@ -72,7 +68,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             GeminiMessage(
                 id = "1",
                 sender = "GEMINI",
-                message = "Bonjour! Je suis l'Assistant Agentique NexusTransit Mtl. Nous sommes le ${DateUtils.getFormattedReferenceDate()} (27.5°C, beau soleil à Montréal, aucun verglas). Comment puis-je optimiser vos déplacements STM et BIXI aujourd'hui?"
+                message = "Bonjour! Je suis l'Assistant Agentique NexusTransit Mtl. Nous sommes le ${DateUtils.getFormattedReferenceDate()} (16.5°C, fraîcheur automnale agréable à Montréal, chaussée sèche, aucun verglas). Comment puis-je optimiser vos déplacements STM et BIXI aujourd'hui?"
             )
         )
     )
@@ -87,6 +83,17 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val hardwareSoftwareInvestCad = MutableStateFlow(18500.0)
 
     init {
+        // Collecte réactive continue depuis la base de données Room (Single Source of Truth)
+        stmRepository.getLiveVehiclePositionsFlow()?.let { flow ->
+            viewModelScope.launch {
+                flow.collect { vehicles ->
+                    if (vehicles.isNotEmpty()) {
+                        liveVehiclePositions.value = vehicles
+                    }
+                }
+            }
+        }
+
         calculateRoutes()
         fetchStmVehiclePositions()
     }
@@ -98,7 +105,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 val locations = stmRepository.getVehiclePositions(apiKey)
                 liveVehiclePositions.value = locations
             } catch (e: Exception) {
-                liveVehiclePositions.value = StmApiService.getMockVehiclePositions()
+                // En cas d'erreur inattendue, repli vers les positions en cache mémoire ou synthèse
+                val fallback = stmRepository.cachedVehiclePositions.value.ifEmpty {
+                    StmApiService.getMockVehiclePositions()
+                }
+                liveVehiclePositions.value = fallback
             } finally {
                 isVehicleLoading.value = false
             }
@@ -182,5 +193,40 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 )
             )
         }
+    }
+
+    fun launchOnboarding() {
+        showOnboardingDialog.value = true
+    }
+
+    fun dismissOnboarding() {
+        showOnboardingDialog.value = false
+    }
+
+    fun completeOnboarding(newPrefs: com.example.data.local.UserTransitPreferences) {
+        userPreferencesManager.savePreferences(
+            preferredMode = newPrefs.preferredTransitMode,
+            favoriteLines = newPrefs.favoriteLines,
+            delayToleranceMinutes = newPrefs.delayToleranceMinutes,
+            homeStation = newPrefs.homeStation,
+            workStation = newPrefs.workStation
+        )
+        userPreferences.value = newPrefs
+        showOnboardingDialog.value = false
+
+        // Synchronisation immédiate avec le profil passager Pieces et les trajets par défaut
+        originState.value = newPrefs.homeStation
+        destinationState.value = newPrefs.workStation
+        passengerProfile.update {
+            it.copy(
+                preferenceMobility = when (newPrefs.preferredTransitMode) {
+                    "METRO" -> "Priorité Métro STM & correspondances souterraines"
+                    "BUS" -> "Lignes d'autobus express et trajets directs"
+                    else -> "Transit Express & réseau multimodal fluide"
+                },
+                favoriteHubs = listOf(newPrefs.homeStation, newPrefs.workStation) + newPrefs.favoriteLines.take(2)
+            )
+        }
+        calculateRoutes()
     }
 }

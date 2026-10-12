@@ -271,7 +271,7 @@ object McpToolRegistry {
                 "[MCP STM GTFS-RT] Flux v2 actif ($refDate): Lignes Métro Orange/Verte nominales, 247 bus géolocalisés en direct."
             }
             "skyfi_get_microclimate_imagery", "skyfi_check_ice_pavement_alert", "skyfi_get_upcoming_passes" -> {
-                "[MCP SkyFi] Observation Satellite 0.5m ($refDate): Température surface 27.5°C, ensoleillé, aucun verglas."
+                "[MCP SkyFi] Observation Satellite 0.5m ($refDate): Température surface 17.0°C, air 16.5°C, douceur d'automne, aucun verglas."
             }
             "sales_calculate_sta_grant", "sales_calculate_cti_rti_taxes" -> {
                 "[MCP Sales CRM] Admissibilité STA confirmée (500$/sem), déduction CTI/RTI 100% calculée."

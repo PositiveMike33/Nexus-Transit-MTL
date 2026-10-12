@@ -1,0 +1,6 @@
+{
+  "summary":  "Plan d'architecture pour le déploiement de la séquence d'onboarding interactive (diaporama avec saisie de préférences et persistance SharedPreferences) et résolution de la résilience aux timeouts du flux GTFS-RT STM par basculement transparent vers le cache Room.",
+  "updatedAt":  "2026-09-29T01:43:10.704325384Z",
+  "requestFeedback":  true,
+  "userFacing":  true
+}

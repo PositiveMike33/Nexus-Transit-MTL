@@ -65,7 +65,7 @@ interface SkyFiApiService {
 
     /**
      * Récupère l'observation satellite et la télémesure météo micro-climatique.
-     * S'assure que la requête porte un horodatage garanti pour le 27 juillet 2026.
+     * S'assure que la requête porte un horodatage garanti pour le 30 septembre 2026.
      */
     @GET("mcp/observation")
     suspend fun getSatelliteObservation(
@@ -89,14 +89,14 @@ interface SkyFiApiService {
 
 /**
  * Service orchestrateur SkyFi garantissant des requêtes et réponses horodatées
- * au 27 juillet 2026 pour le moteur prédictif et la télé-observation.
+ * au 30 septembre 2026 pour le moteur prédictif et la télé-observation.
  */
 class SkyFiService(
     private val apiService: SkyFiApiService = createDefaultApiService()
 ) {
 
     /**
-     * Effectue l'acquisition de la télé-observation satellite SkyFi pour le 27 juillet 2026.
+     * Effectue l'acquisition de la télé-observation satellite SkyFi pour le 30 septembre 2026.
      * Bascule automatiquement sur des données simulées valides si l'endpoint distant est indisponible.
      */
     suspend fun fetchSatelliteData(
@@ -124,7 +124,7 @@ class SkyFiService(
     }
 
     /**
-     * Récupère la liste des passages satellites programmés pour le 27 juillet 2026.
+     * Récupère la liste des passages satellites programmés pour le 30 septembre 2026.
      */
     suspend fun fetchUpcomingPasses(): List<SkyFiPassInfo> {
         val targetDate = DateUtils.getPredictiveEngineContextDate()
@@ -142,7 +142,7 @@ class SkyFiService(
     }
 
     /**
-     * Crée une observation satellite par défaut rigoureusement horodatée au 27 juillet 2026.
+     * Crée une observation satellite par défaut rigoureusement horodatée au 30 septembre 2026.
      */
     fun createDefaultObservation(
         lat: Double = 45.5017,
@@ -160,17 +160,17 @@ class SkyFiService(
             targetCity = "Montréal, QC, Canada",
             latitude = lat,
             longitude = lon,
-            airTemperatureCelsius = 27.5,
-            surfaceTemperatureCelsius = 29.1,
-            cloudCoverPercent = 5.0,
-            weatherCondition = "Beau temps ensoleillé (Conditions estivales optimales)",
+            airTemperatureCelsius = 16.5,
+            surfaceTemperatureCelsius = 17.0,
+            cloudCoverPercent = 15.0,
+            weatherCondition = "Douceur d'automne agréable (Conditions métropolitaines optimales)",
             iceAlertStatus = "AUCUN VERGLAS",
             mcpEndpoint = "https://mcp.skyfi.com/mcp"
         )
     }
 
     /**
-     * Génère la liste des passages satellites par défaut pour la journée du 27 juillet 2026.
+     * Génère la liste des passages satellites par défaut pour la journée du 30 septembre 2026.
      */
     private fun createDefaultPassList(): List<SkyFiPassInfo> {
         val dateStr = DateUtils.getFormattedCurrentDate(pattern = "yyyy-MM-dd")

@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import com.example.ui.screens.AiAssistantScreen
 import com.example.ui.screens.McpHubScreen
 import com.example.ui.screens.MonetizationScreen
+import com.example.ui.screens.OnboardingDialog
 import com.example.ui.screens.RoutePlannerScreen
 import com.example.ui.theme.*
 import com.example.viewmodel.MainViewModel
@@ -52,6 +53,8 @@ enum class NavigationTab(val title: String, val icon: ImageVector, val tag: Stri
 @Composable
 fun MainAppScreen(viewModel: MainViewModel) {
     var selectedTab by remember { mutableStateOf(NavigationTab.ROUTES) }
+    val showOnboarding by viewModel.showOnboardingDialog.collectAsState()
+    val userPrefs by viewModel.userPreferences.collectAsState()
 
     Scaffold(
         topBar = {
@@ -88,6 +91,20 @@ fun MainAppScreen(viewModel: MainViewModel) {
                     }
                 },
                 actions = {
+                    // Bouton d'accès au guide et onboarding interactif
+                    IconButton(
+                        onClick = { viewModel.launchOnboarding() },
+                        modifier = Modifier.testTag("reopen_onboarding_button")
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.HelpOutline,
+                            contentDescription = "Ouvrir l'onboarding et les préférences",
+                            tint = PrimaryCyan
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.width(4.dp))
+
                     Surface(
                         color = StmGreen.copy(alpha = 0.15f),
                         shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
@@ -112,7 +129,7 @@ fun MainAppScreen(viewModel: MainViewModel) {
                             )
                         }
                     }
-                    Spacer(modifier = Modifier.width(12.dp))
+                    Spacer(modifier = Modifier.width(8.dp))
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = ImmersiveBg
@@ -155,6 +172,17 @@ fun MainAppScreen(viewModel: MainViewModel) {
                 NavigationTab.MCP_HUB -> McpHubScreen(viewModel = viewModel)
                 NavigationTab.AI_ASSISTANT -> AiAssistantScreen(viewModel = viewModel)
                 NavigationTab.MONETIZATION -> MonetizationScreen(viewModel = viewModel)
+            }
+
+            // Affichage de l'onboarding au premier lancement ou à la demande
+            if (showOnboarding) {
+                OnboardingDialog(
+                    initialPreferences = userPrefs,
+                    onDismiss = { viewModel.dismissOnboarding() },
+                    onComplete = { completedPrefs ->
+                        viewModel.completeOnboarding(completedPrefs)
+                    }
+                )
             }
         }
     }

@@ -36,7 +36,7 @@ class StmApiLoggingInterceptor : Interceptor {
         val response: Response = try {
             chain.proceed(request)
         } catch (e: Exception) {
-            Log.e(TAG, "<-- [ERR STM GTFS-RT] Échec réseau vers STM API: ${e.localizedMessage}")
+            Log.w(TAG, "<-- [RÉSEAU STM GTFS-RT] Latence ou indisponibilité (${e.localizedMessage}). Activation du fallback cache local Room.")
             throw e
         }
 
